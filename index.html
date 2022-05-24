@@ -1,0 +1,45 @@
+<html>
+<head>
+<script>
+var passphrase = "";
+
+var questions = [
+    "Hello",
+    "Bye"
+  ],
+  currentQuestion = 0,
+  doc = document,
+  container = doc.getElementById('container')
+elQuestion = doc.getElementById('question')
+elUserAnswer = doc.getElementById('user-answer'),
+  elCheck = doc.getElementById('check'),
+
+  displayQuestion = function(index) {
+    elQuestion.textContent = questions[index];
+  },
+
+  checkAnswer = function() {
+    var userAnswer = elUserAnswer.value.toLowerCase().replace(/\s/g, '');
+    passphrase += userAnswer;
+    console.log(passphrase);
+
+    currentQuestion += 1;
+    if (currentQuestion < questions.length) {
+      displayQuestion(currentQuestion);
+    } else {
+      container.innerHTML = "";
+    }
+
+  };
+
+elCheck.addEventListener('click', checkAnswer, false);
+displayQuestion(currentQuestion);
+</script>
+</head>
+<body>
+<div id="container">
+  <div id="question"></div>
+  <input id="user-answer"><div id="check" class="button">Check</div>
+</div>
+</body>
+</html>
