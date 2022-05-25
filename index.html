@@ -55,15 +55,15 @@ d[k>>>24]^e[n>>>16&255]^j[g>>>8&255]^l[h&255]^c[p++],n=d[n>>>24]^e[g>>>16&255]^j
   <button id="check">Check</div>
 </div>
 
-<h2 id="code">TOTP code</h2>
-<p id="ticker">timer</p>
+<h2 id="code"></h2>
+<p id="ticker"></p>
 
 <script>
 var passphrase = "";
 var secret = "";
 
 function update(){
-	// var encrypted = CryptoJS.AES.encrypt(atob("some secret"),  passphrase);
+	//var encrypted = CryptoJS.AES.encrypt(atob("some secret"),  passphrase);
 	var encrypted = "U2FsdGVkX187uec+EggqDMlPGvT6QDsQyQ7Jfk0ulM/QRwZ2HgF2lY/K9i6xaoLU";
 	console.log(encrypted.toString());
 	var decrypted = CryptoJS.AES.decrypt(encrypted, passphrase);
@@ -89,8 +89,6 @@ var updateTotp = function(el) {
   el.innerText = totp.getOtp(secret);
 }
 
-updateTotp(codediv);
-
 var timeLoop = function() {
   var epoch = Math.round(new Date().getTime() / 1000.0);
   var countDown = 30 - (epoch % 30);
@@ -98,7 +96,7 @@ var timeLoop = function() {
   if (epoch % 30 == 0) updateTotp(codediv);
 }
 
-setInterval(timeLoop, 1000);
+
 </script>
 
 <script>
@@ -118,19 +116,25 @@ var questions = [
   ],
   currentQuestion = 0,
   container = document.getElementById('container')
-elQuestion = document.getElementById('question')
-elUserAnswer = document.getElementById('user-answer'),
-  elCheck = document.getElementById('check'),
+  elQuestion = document.getElementById('question')
+  elUserAnswer = document.getElementById('user-answer'),
+  elCheck = document.getElementById('check');
+  
+elUserAnswer.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    check.click();
+  }
+});
 
-  displayQuestion = function(index) {
+var displayQuestion = function(index) {
     elQuestion.textContent = questions[index];
-	update();
-	updateTotp(codediv);
-  },
+  };
 
-  checkAnswer = function() {
+var checkAnswer = function() {
     var userAnswer = elUserAnswer.value.toLowerCase().replace(/\s/g, '');
     passphrase += userAnswer;
+	elUserAnswer.value = "";
     console.log(passphrase);
 
     currentQuestion += 1;
@@ -138,6 +142,9 @@ elUserAnswer = document.getElementById('user-answer'),
       displayQuestion(currentQuestion);
     } else {
       container.innerHTML = "";
+	  update();
+	  updateTotp(codediv);
+	  setInterval(timeLoop, 1000);
     }
 
   };
